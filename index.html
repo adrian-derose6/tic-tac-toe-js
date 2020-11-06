@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <link href="css/tic-tac-toe.css" rel="stylesheet" >
+    </head>
+    <body>
+        <div class="game-wrapper">
+            <div id="mode-selection-wrapper">
+                <div style="padding: 20px">Choose To Play:</div>
+                <div class="button-row">
+                    <button class="button" data-mode="PLAYERvPLAYER">Player vs. Player</button>
+                    <button class="button" data-mode="PLAYERvAI">Player vs. AI</button>
+                </div>
+            </div>
+            <div id="sym-selection-wrapper">
+                <h2>Player 1, choose your symbol: </h2>
+                <form>
+                    <div id="sym-button-row">
+                        <input type="radio" id="symbol-x" name="symbol" class="sym-button" value="X">
+                        <label for="symbol-x">X</label>
+                        <input type="radio" id="symbol-y" name="symbol" class="sym-button" value="O">
+                        <label for="symbol-y">Y</label>
+                    </div>
+                </form>
+            </div>
+            <div id="game-grid">
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+            </div>
+        </div>
+        <script type="module" src="js/main.js"></script>
+    </body>
+</html>
