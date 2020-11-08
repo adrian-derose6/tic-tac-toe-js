@@ -1,12 +1,15 @@
 import Events from './events.js';
 
 const NEW_GAME = {
-    currentPlayer: null,
     winner: null,
     mode: '',
     score: 0,
     isNewGame: true,
-    players: {}
+    players: {
+        currentPlayer: '',
+        player1: '',
+        player2: ''
+    }
 };
 
 const GameState = (() => {
@@ -31,16 +34,17 @@ const GameState = (() => {
     }
     
     const setPlayers = (playerObj) => {
-        state = { ...state, currentPlayer: 'player1', players: playerObj };
-        console.log(state)
-        Events.emit('playersSet');
+        state = { ...state, players: { ...playerObj }};
+        Events.emit('playersSet', state.players);
     }
 
     const setCurrentPlayer = (player) => {
-        state = { ...state, currentPlayer: player };
+        state = { ...state, players: { ...state.players, currentPlayer: player }};
     }
 
-    const getCurrentPlayer = () => state.currentPlayer;
+    const getCurrentPlayer = () => state.players.currentPlayer;
+
+    const getCurrentPlayerSymbol = () => state.players[state.players.currentPlayer];
 
     Events.on('setNewGame', setNewGame);
     Events.on('setMode', setMode);
@@ -51,6 +55,7 @@ const GameState = (() => {
     return {
         getCurrentPlayer,
         setCurrentPlayer,
+        getCurrentPlayerSymbol,
         isNewGame,
         setNewGame,
         resetGame,

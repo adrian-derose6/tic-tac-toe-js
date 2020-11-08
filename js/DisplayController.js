@@ -26,18 +26,54 @@ const displayController = (() => {
             let player1 = event.target.value;
             let player2 = player1 === 'X' ? 'O' : 'X';
 
-            Events.emit('setPlayers', { player1, player2 });
+            Events.emit('setPlayers', { currentPlayer: 'player1', player1, player2 });
         }));
     }
 
     const renderGamegrid = () => {
         gameWrapper.innerHTML = '';
         gameWrapper.appendChild(gameGrid);
+        GameBoard.getBoard().forEach((row, rowIndex) => {
+            row.forEach((value, colIndex) => {
+                gameGrid.appendChild(initializeGridCell(value, rowIndex, colIndex));
+            });
+        });
+    }
+
+    const initializeGridCell = (value, rowIndex, colIndex) => {
+        let cell = document.createElement('div');
+        let text = document.createElement('h3');
+
+        text.innerText = value;
+        cell.className = 'grid-cell';
+        cell.setAttribute('data-row', rowIndex);
+        cell.setAttribute('data-col', colIndex);
+        cell.appendChild(text);
+        
+        let handleCellClick = event => {
+            let value = GameState.getCurrentPlayerSymbol();
+            console.log('clicked');
+            Events.emit('updateCell', { value, rowIndex, colIndex });
+        }
+
+        cell.addEventListener('click', handleCellClick);
+
+        return cell;
+    }
+
+    const updateCell = (cellObj) => {
+        let { value, rowIndex, colIndex } = cellObj;
+        let gridCell = document.querySelector(`[data-row="${rowIndex}"][data-col="${colIndex}"]`);
+        let newCell = gridCell.cloneNode(true);
+
+        newCell.querySelector('h3').innerText = value;
+        gridCell.parentNode.replaceChild(newCell, gridCell);
     }
 
     Events.on('newGameChanged', renderModeSelection);
     Events.on('modeChanged', renderSymSelection);
     Events.on('playersSet', renderGamegrid);
+    Events.on('cellUpdated', updateCell);
 })();
 
 

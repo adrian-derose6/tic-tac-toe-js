@@ -78,6 +78,10 @@ body {
 
 .grid-cell {
     background-color: white;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    font-size: 60px;
 }
 
 .grid-cell:hover {

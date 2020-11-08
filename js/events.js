@@ -4,7 +4,6 @@ var Events = (() => {
     let on = (eventName, funct) => {
         events[eventName] = events[eventName] || [];
         events[eventName].push(funct);
-        console.log(events);
     };
 
     let off = (eventName, funct) => {
