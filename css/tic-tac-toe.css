@@ -65,14 +65,24 @@ body {
     border-color: darkgay;
 }
 
-#grame-grid {
+#game-grid {
     display: grid;
-    border: 1px solid gray;
+    height: 600px;
+    width: 600px;
     grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-gap: 5px;
+    background-color: black;
+    border: 5px solid black;
 }
 
 .grid-cell {
-    border: 1px solid red;
+    background-color: white;
+}
+
+.grid-cell:hover {
+    cursor: pointer;
+    background-color: lightgray;
 }
 
 .button-row {

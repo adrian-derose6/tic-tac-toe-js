@@ -32,6 +32,7 @@ const displayController = (() => {
 
     const renderGamegrid = () => {
         gameWrapper.innerHTML = '';
+        gameWrapper.appendChild(gameGrid);
     }
 
     Events.on('newGameChanged', renderModeSelection);
