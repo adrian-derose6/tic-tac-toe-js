@@ -9,6 +9,10 @@ const CLEAR_BOARD = [
 
 const GameBoard = (() => {
     let board = [ ...CLEAR_BOARD ];
+    let counters = {
+        X: 0,
+        O: 0
+    };
 
     const getBoard = () => {
         return board;
@@ -19,8 +23,33 @@ const GameBoard = (() => {
 
         if (board[rowIndex][colIndex] == '') {
             board[rowIndex][colIndex] = value;
+            counters[value]++;
+
             Events.emit('cellUpdated', cellObj);
         }
+    }
+
+    const checkForWin = (cellObj) => {
+        let { value, rowIndex, colIndex } = cellObj;
+
+        if (counters[value] >= 3) {
+            if (checkRow(value, rowIndex) || checkCol(value, colIndex)) {
+                console.log('winner!');
+            }
+        }
+    }
+
+    const checkRow = (val, row) => {
+        return board[row].every(item => item === val);
+    }
+
+    const checkCol = (val, col) => {
+        return board.every(row => row[col] === val);
+    }
+
+    const checkDiagonal = (val) => {
+        let leftRight = () => board.every((row, index) => row[index] == val);
+        
     }
 
     const clearBoard = () => {
@@ -28,6 +57,7 @@ const GameBoard = (() => {
     }
 
     Events.on('updateCell', updateCell);
+    Events.on('updateCell', checkForWin);
 
     return {
         getBoard,

@@ -52,8 +52,9 @@ const displayController = (() => {
         
         let handleCellClick = event => {
             let value = GameState.getCurrentPlayerSymbol();
-            console.log('clicked');
+
             Events.emit('updateCell', { value, rowIndex, colIndex });
+            Events.emit('changeTurn');
         }
 
         cell.addEventListener('click', handleCellClick);
@@ -63,11 +64,11 @@ const displayController = (() => {
 
     const updateCell = (cellObj) => {
         let { value, rowIndex, colIndex } = cellObj;
-        let gridCell = document.querySelector(`[data-row="${rowIndex}"][data-col="${colIndex}"]`);
-        let newCell = gridCell.cloneNode(true);
+        let oldCell = document.querySelector(`[data-row="${rowIndex}"][data-col="${colIndex}"]`);
+        let newCell = oldCell.cloneNode(true);
 
         newCell.querySelector('h3').innerText = value;
-        gridCell.parentNode.replaceChild(newCell, gridCell);
+        oldCell.parentNode.replaceChild(newCell, oldCell);
     }
 
     Events.on('newGameChanged', renderModeSelection);

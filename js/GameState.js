@@ -38,6 +38,12 @@ const GameState = (() => {
         Events.emit('playersSet', state.players);
     }
 
+    const changeTurn = () => {
+        let newPlayer = state.players.currentPlayer === 'player1' ? 'player2' : 'player1';
+
+        state = { ...state, players: { ...state.players, currentPlayer: newPlayer }}
+    }
+
     const setCurrentPlayer = (player) => {
         state = { ...state, players: { ...state.players, currentPlayer: player }};
     }
@@ -51,6 +57,7 @@ const GameState = (() => {
     Events.on('resetGame', resetGame);
     Events.on('setCurrentPlayer', setCurrentPlayer);
     Events.on('setPlayers', setPlayers);
+    Events.on('changeTurn', changeTurn);
 
     return {
         getCurrentPlayer,
