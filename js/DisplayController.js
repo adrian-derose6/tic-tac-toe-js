@@ -35,12 +35,12 @@ const displayController = (() => {
         gameWrapper.appendChild(gameGrid);
         GameBoard.getBoard().forEach((row, rowIndex) => {
             row.forEach((value, colIndex) => {
-                gameGrid.appendChild(initializeGridCell(value, rowIndex, colIndex));
+                gameGrid.appendChild(initGridCell(value, rowIndex, colIndex));
             });
         });
     }
 
-    const initializeGridCell = (value, rowIndex, colIndex) => {
+    const initGridCell = (value, rowIndex, colIndex) => {
         let cell = document.createElement('div');
         let text = document.createElement('h3');
 
@@ -62,7 +62,7 @@ const displayController = (() => {
         return cell;
     }
 
-    const updateCell = (cellObj) => {
+    const updateGridCell = (cellObj) => {
         let { value, rowIndex, colIndex } = cellObj;
         let oldCell = document.querySelector(`[data-row="${rowIndex}"][data-col="${colIndex}"]`);
         let newCell = oldCell.cloneNode(true);
@@ -74,7 +74,7 @@ const displayController = (() => {
     Events.on('newGameChanged', renderModeSelection);
     Events.on('modeChanged', renderSymSelection);
     Events.on('playersSet', renderGamegrid);
-    Events.on('cellUpdated', updateCell);
+    Events.on('cellUpdated', updateGridCell);
 })();
 
 

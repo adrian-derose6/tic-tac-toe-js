@@ -30,10 +30,10 @@ const GameBoard = (() => {
     }
 
     const checkForWin = (cellObj) => {
-        let { value, rowIndex, colIndex } = cellObj;
+        const { value, rowIndex, colIndex } = cellObj;
 
         if (counters[value] >= 3) {
-            if (checkRow(value, rowIndex) || checkCol(value, colIndex)) {
+            if (checkRow(value, rowIndex) || checkCol(value, colIndex) || checkDiagonal(value, rowIndex, colIndex)) {
                 console.log('winner!');
             }
         }
@@ -47,9 +47,19 @@ const GameBoard = (() => {
         return board.every(row => row[col] === val);
     }
 
-    const checkDiagonal = (val) => {
-        let leftRight = () => board.every((row, index) => row[index] == val);
-        
+    const checkDiagonal = (val, row, col) => {
+        const leftRight = () => board.every((row, index) => row[index] == val);
+        const rightLeft = () => board[0][2] == board[1][1] == board[2][0];
+
+        if (row == col == 1) {
+            return leftRight() || rightLeft();
+        }
+        else if (row == col) {
+            return leftRight();
+        }
+        else if (Math.abs(row - col) == 2){
+            return rightLeft();
+        }
     }
 
     const clearBoard = () => {
