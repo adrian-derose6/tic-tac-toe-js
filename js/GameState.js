@@ -1,15 +1,13 @@
 import Events from './events.js';
 
 const NEW_GAME = {
-    winner: null,
+    winner: '',
     mode: '',
     score: 0,
     isNewGame: true,
-    players: {
-        currentPlayer: '',
-        player1: '',
-        player2: ''
-    }
+    currentPlayer: 'player1',
+    player1: {},
+    player2: {}
 };
 
 const GameState = (() => {
@@ -33,36 +31,49 @@ const GameState = (() => {
         return state.isNewGame;   
     }
     
-    const setPlayers = (playerObj) => {
-        state = { ...state, players: { ...playerObj }};
-        Events.emit('playersSet', state.players);
+    const setPlayers = (playersObj) => {
+        const { player1Obj, player2Obj } = playersObj;
+
+        state = { 
+            ...state,  
+            player1: { ...player1Obj },
+            player2: { ...player2Obj }
+        };
+
+        Events.emit('playersSet');
     }
 
     const changeTurn = () => {
-        let newPlayer = state.players.currentPlayer === 'player1' ? 'player2' : 'player1';
+        let newPlayer = state.currentPlayer === 'player1' ? 'player2' : 'player1';
 
-        state = { ...state, players: { ...state.players, currentPlayer: newPlayer }}
+        state = { ...state, currentPlayer: newPlayer }
     }
 
-    const setCurrentPlayer = (player) => {
-        state = { ...state, players: { ...state.players, currentPlayer: player }};
+    const setWinner = () => {
+        state.winner = state.currentPlayer;
+
+        Events.emit('winnerSet', state[state.winner]);
+    }
+    
+    const getWinner = () => {
+        return state.winner;
     }
 
-    const getCurrentPlayer = () => state.players.currentPlayer;
+    const getCurrentPlayer = () => state[state.currentPlayer];
 
-    const getCurrentPlayerSymbol = () => state.players[state.players.currentPlayer];
+    const getCurrentPlayerSymbol = () => state[state.currentPlayer].sym;
 
     Events.on('setNewGame', setNewGame);
     Events.on('setMode', setMode);
     Events.on('resetGame', resetGame);
-    Events.on('setCurrentPlayer', setCurrentPlayer);
     Events.on('setPlayers', setPlayers);
     Events.on('changeTurn', changeTurn);
+    Events.on('playerWon', setWinner);
 
     return {
         getCurrentPlayer,
-        setCurrentPlayer,
         getCurrentPlayerSymbol,
+        getWinner,
         isNewGame,
         setNewGame,
         resetGame,

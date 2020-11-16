@@ -23,10 +23,16 @@ const displayController = (() => {
         gameWrapper.innerHTML = '';
         gameWrapper.appendChild(symSelection);
         symButtons.forEach((button) => button.addEventListener('click', (event) => {
-            let player1 = event.target.value;
-            let player2 = player1 === 'X' ? 'O' : 'X';
+            let player1Obj = {
+                sym: event.target.value,
+                name: 'Player 1'
+            }
 
-            Events.emit('setPlayers', { currentPlayer: 'player1', player1, player2 });
+            let player2Obj = {
+                sym: player1Obj.sym === 'X' ? 'O' : 'X',
+                name: 'Player 2'
+            }
+            Events.emit('setPlayers', { player1Obj, player2Obj });
         }));
     }
 
@@ -35,12 +41,13 @@ const displayController = (() => {
         gameWrapper.appendChild(gameGrid);
         GameBoard.getBoard().forEach((row, rowIndex) => {
             row.forEach((value, colIndex) => {
-                gameGrid.appendChild(initGridCell(value, rowIndex, colIndex));
+                gameGrid.appendChild(initGridCell({ value, rowIndex, colIndex }));
             });
         });
     }
 
-    const initGridCell = (value, rowIndex, colIndex) => {
+    const initGridCell = (cellObj) => {
+        const { value, rowIndex, colIndex } = cellObj;
         let cell = document.createElement('div');
         let text = document.createElement('h3');
 
@@ -49,17 +56,16 @@ const displayController = (() => {
         cell.setAttribute('data-row', rowIndex);
         cell.setAttribute('data-col', colIndex);
         cell.appendChild(text);
-        
-        let handleCellClick = event => {
-            let value = GameState.getCurrentPlayerSymbol();
 
-            Events.emit('updateCell', { value, rowIndex, colIndex });
-            Events.emit('changeTurn');
-        }
-
-        cell.addEventListener('click', handleCellClick);
+        cell.addEventListener('click', (event) => handleCellClick(event, cellObj));
 
         return cell;
+    }
+
+    const handleCellClick = (event, cellObj) => {
+        const symbol = GameState.getCurrentPlayerSymbol();
+
+        Events.emit('updateCell', { ...cellObj, value: symbol });
     }
 
     const updateGridCell = (cellObj) => {
@@ -71,10 +77,36 @@ const displayController = (() => {
         oldCell.parentNode.replaceChild(newCell, oldCell);
     }
 
+    const renderWinner = (winner) => {
+        const winnerText = `${winner.name} is the winner!`;
+
+        gameWrapper.prepend(renderHeading(winnerText));
+        document.querySelectorAll('.grid-cell').forEach(cell => {
+            let newCell = cell.cloneNode(true);
+            cell.parentNode.replaceChild(newCell, cell);
+        });
+    }
+
+    const renderTie = () => {
+        const text = 'Tie Game!';
+        gameWrapper.prepend(renderHeading(text));
+    }
+
+    const renderHeading = (text) => {
+        const heading = document.createElement('h2');
+        
+        heading.className = 'game-heading';
+        heading.innerText = text;
+
+        return heading;
+    }
+
     Events.on('newGameChanged', renderModeSelection);
     Events.on('modeChanged', renderSymSelection);
     Events.on('playersSet', renderGamegrid);
     Events.on('cellUpdated', updateGridCell);
+    Events.on('winnerSet', renderWinner);
+    Events.on('gameTie', renderTie);
 })();
 
 
