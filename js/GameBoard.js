@@ -1,14 +1,8 @@
 import Events from "./events.js";
 import GameState from './GameState.js';
 
-const CLEAR_BOARD = [
-    ['','',''],
-    ['','',''],
-    ['','',''],
-];
-
 const GameBoard = (() => {
-    let board = [ ...CLEAR_BOARD ];
+    let board = [];
     let counters = {
         X: 0,
         O: 0
@@ -33,7 +27,6 @@ const GameBoard = (() => {
         const { value, rowIndex, colIndex } = cellObj;
 
         if (counters[value] >= 3) {
-            console.log(board);
             if (checkRow(value, rowIndex) || checkCol(value, colIndex) || checkDiagonal(value, rowIndex, colIndex)) {
                 Events.emit('playerWon');
             }
@@ -76,12 +69,17 @@ const GameBoard = (() => {
     }
 
     const clearBoard = () => {
-        board = CLEAR_BOARD;
+        board = new Array(3).fill('').map(() => new Array(3).fill(''));
+        counters = { X: 0, Y: 0};
+
+        Events.emit('boardCleared');
     }
 
     Events.on('updateCell', updateCell);
     Events.on('updateCell', checkForWin);
     Events.on('updateCell', checkForTie);
+    Events.on('newGameSet', clearBoard);
+    Events.on('gameReset', clearBoard);
 
     return {
         getBoard,

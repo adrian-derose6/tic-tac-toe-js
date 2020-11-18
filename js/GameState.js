@@ -19,12 +19,13 @@ const GameState = (() => {
     }
 
     const resetGame = () => {
-        state = { ...state, currentPlayer: null, winner: null };
+        state = { ...state, currentPlayer: 'player1', winner: '' };
+        Events.emit('gameReset')
     }
 
     const setNewGame = () => {
         state = { ...NEW_GAME };
-        Events.emit('newGameChanged');
+        Events.emit('newGameSet');
     }
 
     const isNewGame = () => {

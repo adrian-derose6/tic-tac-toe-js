@@ -8,6 +8,8 @@ const displayController = (() => {
     const symSelection = document.getElementById('sym-selection-wrapper');
     const symButtons = [...document.getElementsByClassName('sym-button')];
     const gameGrid = document.getElementById('game-grid');
+    const resetButton = document.getElementById('reset-game-btn');
+    const newButton = document.getElementById('new-game-btn');
 
     const renderModeSelection = () => {
         gameWrapper.innerHTML = '';
@@ -38,7 +40,9 @@ const displayController = (() => {
 
     const renderGamegrid = () => {
         gameWrapper.innerHTML = '';
+        gameGrid.innerHTML = '';
         gameWrapper.appendChild(gameGrid);
+        console.log(GameBoard.getBoard());
         GameBoard.getBoard().forEach((row, rowIndex) => {
             row.forEach((value, colIndex) => {
                 gameGrid.appendChild(initGridCell({ value, rowIndex, colIndex }));
@@ -101,7 +105,16 @@ const displayController = (() => {
         return heading;
     }
 
-    Events.on('newGameChanged', renderModeSelection);
+    const clearGamegrid = () => {
+        gameGrid.innerHTML = '';
+    }
+
+    resetButton.addEventListener('click', () => Events.emit('resetGame'));
+    newButton.addEventListener('click', () => Events.emit('setNewGame'));
+
+    Events.on('newGameSet', renderModeSelection);
+    Events.on('gameReset', renderGamegrid);
+    Events.on('boardCleared', clearGamegrid);
     Events.on('modeChanged', renderSymSelection);
     Events.on('playersSet', renderGamegrid);
     Events.on('cellUpdated', updateGridCell);

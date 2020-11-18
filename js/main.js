@@ -7,7 +7,7 @@ import Events from './events.js';
 
 function initGame() {
     if (GameState.isNewGame()) {
-        Events.emit('newGameChanged');
+        Events.emit('newGameSet');
     }
 }
 
